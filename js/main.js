@@ -1,182 +1,166 @@
-/*  ---------------------------------------------------
-    Template Name: Dreams
-    Description: Dreams wedding template
-    Author: Colorib
-    Author URI: https://colorlib.com/
-    Version: 1.0
-    Created: Colorib
----------------------------------------------------------  */
+;(function () {
+	
+	'use strict';
 
-'use strict';
+	var isMobile = {
+		Android: function() {
+			return navigator.userAgent.match(/Android/i);
+		},
+			BlackBerry: function() {
+			return navigator.userAgent.match(/BlackBerry/i);
+		},
+			iOS: function() {
+			return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+		},
+			Opera: function() {
+			return navigator.userAgent.match(/Opera Mini/i);
+		},
+			Windows: function() {
+			return navigator.userAgent.match(/IEMobile/i);
+		},
+			any: function() {
+			return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+		}
+	};
 
-(function ($) {
+	var fullHeight = function() {
 
-    /*------------------
-        Preloader
-    --------------------*/
-    $(window).on('load', function () {
-        $(".loader").fadeOut();
-        $("#preloder").delay(200).fadeOut("slow");
+		if ( !isMobile.any() ) {
+			$('.js-fullheight').css('height', $(window).height());
+			$(window).resize(function(){
+				$('.js-fullheight').css('height', $(window).height());
+			});
+		}
 
-        /*------------------
-            Portfolio filter
-        --------------------*/
-        $('.portfolio__filter li').on('click', function () {
-            $('.portfolio__filter li').removeClass('active');
-            $(this).addClass('active');
-        });
-        if ($('.portfolio__gallery').length > 0) {
-            var containerEl = document.querySelector('.portfolio__gallery');
-            var mixer = mixitup(containerEl);
-        }
-    });
+	};
 
-    /*------------------
-        Background Set
-    --------------------*/
-    $('.set-bg').each(function () {
-        var bg = $(this).data('setbg');
-        $(this).css('background-image', 'url(' + bg + ')');
-    });
+	// Animations
 
-    //Masonary
-    $('.work__gallery').masonry({
-        itemSelector: '.work__item',
-        columnWidth: '.grid-sizer',
-        gutter: 10
-    });
+	var contentWayPoint = function() {
+		var i = 0;
+		$('.animate-box').waypoint( function( direction ) {
 
-    /*------------------
-		Navigation
-	--------------------*/
-    $(".mobile-menu").slicknav({
-        prependTo: '#mobile-menu-wrap',
-        allowParentLinks: true
-    });
+			if( direction === 'down' && !$(this.element).hasClass('animated') ) {
+				
+				i++;
 
-    /*------------------
-		Hero Slider
-	--------------------*/
-    $('.hero__slider').owlCarousel({
-        loop: true,
-        dots: true,
-        mouseDrag: false,
-        animateOut: 'fadeOut',
-        animateIn: 'fadeIn',
-        items: 1,
-        margin: 0,
-        smartSpeed: 1200,
-        autoHeight: false,
-        autoplay: true,
-    });
+				$(this.element).addClass('item-animate');
+				setTimeout(function(){
 
-    var dot = $('.hero__slider .owl-dot');
-    dot.each(function () {
-        var index = $(this).index() + 1;
-        if (index < 10) {
-            $(this).html('0').append(index);
-        } else {
-            $(this).html(index);
-        }
-    });
+					$('body .animate-box.item-animate').each(function(k){
+						var el = $(this);
+						setTimeout( function () {
+							var effect = el.data('animate-effect');
+							if ( effect === 'fadeIn') {
+								el.addClass('fadeIn animated');
+							} else if ( effect === 'fadeInLeft') {
+								el.addClass('fadeInLeft animated');
+							} else if ( effect === 'fadeInRight') {
+								el.addClass('fadeInRight animated');
+							} else {
+								el.addClass('fadeInUp animated');
+							}
 
-    /*------------------
-        Testimonial Slider
-    --------------------*/
-    $(".testimonial__slider").owlCarousel({
-        loop: true,
-        margin: 0,
-        items: 3,
-        dots: true,
-        dotsEach: 2,
-        smartSpeed: 1200,
-        autoHeight: false,
-        autoplay: true,
-        responsive: {
-            992: {
-                items: 3
-            },
-            768: {
-                items: 2
-            },
-            320: {
-                items: 1
-            }
-        }
-    });
+							el.removeClass('item-animate');
+						},  k * 200, 'easeInOutExpo' );
+					});
+					
+				}, 100);
+				
+			}
 
-    /*------------------
-        Latest Slider
-    --------------------*/
-    $(".latest__slider").owlCarousel({
-        loop: true,
-        margin: 0,
-        items: 3,
-        dots: true,
-        dotsEach: 2,
-        smartSpeed: 1200,
-        autoHeight: false,
-        autoplay: true,
-        responsive: {
-            992: {
-                items: 3
-            },
-            768: {
-                items: 2
-            },
-            320: {
-                items: 1
-            }
-        }
-    });
+		} , { offset: '85%' } );
+	};
 
-    /*------------------
-        Logo Slider
-    --------------------*/
-    $(".logo__carousel").owlCarousel({
-        loop: true,
-        margin: 100,
-        items: 6,
-        dots: false,
-        smartSpeed: 1200,
-        autoHeight: false,
-        autoplay: true,
-        responsive: {
-            992: {
-                items: 5
-            },
-            768: {
-                items: 4
-            },
-            480: {
-                items: 3
-            },
-            320: {
-                items: 2
-            }
-        }
-    });
 
-    /*------------------
-        Video Popup
-    --------------------*/
-    $('.video-popup').magnificPopup({
-        type: 'iframe'
-    });
+	var burgerMenu = function() {
 
-    /*------------------
-        Counter
-    --------------------*/
-    $('.counter_num').each(function () {
-        $(this).prop('Counter', 0).animate({
-            Counter: $(this).text()
-        }, {
-            duration: 4000,
-            easing: 'swing',
-            step: function (now) {
-                $(this).text(Math.ceil(now));
-            }
-        });
-    });
+		$('.js-fh5co-nav-toggle').on('click', function(event){
+			event.preventDefault();
+			var $this = $(this);
 
-})(jQuery);
+			if ($('body').hasClass('offcanvas')) {
+				$this.removeClass('active');
+				$('body').removeClass('offcanvas');	
+			} else {
+				$this.addClass('active');
+				$('body').addClass('offcanvas');	
+			}
+		});
+
+
+
+	};
+
+	// Click outside of offcanvass
+	var mobileMenuOutsideClick = function() {
+
+		$(document).click(function (e) {
+	    var container = $("#fh5co-aside, .js-fh5co-nav-toggle");
+	    if (!container.is(e.target) && container.has(e.target).length === 0) {
+
+	    	if ( $('body').hasClass('offcanvas') ) {
+
+    			$('body').removeClass('offcanvas');
+    			$('.js-fh5co-nav-toggle').removeClass('active');
+			
+	    	}
+	    	
+	    }
+		});
+
+		$(window).scroll(function(){
+			if ( $('body').hasClass('offcanvas') ) {
+
+    			$('body').removeClass('offcanvas');
+    			$('.js-fh5co-nav-toggle').removeClass('active');
+			
+	    	}
+		});
+
+	};
+
+	var sliderMain = function() {
+		
+	  	$('#fh5co-hero .flexslider').flexslider({
+			animation: "fade",
+			slideshowSpeed: 5000,
+			directionNav: true,
+			start: function(){
+				setTimeout(function(){
+					$('.slider-text').removeClass('animated fadeInUp');
+					$('.flex-active-slide').find('.slider-text').addClass('animated fadeInUp');
+				}, 500);
+			},
+			before: function(){
+				setTimeout(function(){
+					$('.slider-text').removeClass('animated fadeInUp');
+					$('.flex-active-slide').find('.slider-text').addClass('animated fadeInUp');
+				}, 500);
+			}
+
+	  	});
+
+	};
+
+	var jamilmodal = function () {
+		$('#myModal').on('show.bs.modal', function (e) {
+			var img = $(e.relatedTarget).attr('href'); //image
+			var modalheader = $(e.relatedTarget).attr('class'); //modal header
+			$('#showimg').attr('src' , img);
+			$('#headermodal').attr('src' , modalheader);
+		});
+	};
+
+
+	// Document on load.
+	$(function(){
+		fullHeight();
+		contentWayPoint();
+		burgerMenu();
+		mobileMenuOutsideClick();
+		sliderMain();
+		jamilmodal();
+	});
+
+}());
